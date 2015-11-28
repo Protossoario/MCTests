@@ -1,11 +1,12 @@
 import React from 'react';
+import QuestionList from './QuestionList';
 
 class Home extends React.Component {
   render() {
     return (
-      <div className='alert alert-info'>
-        Hello from Home Component
-      </div>
+        <div className="container">
+            <QuestionList />
+        </div>
     );
   }
 }
