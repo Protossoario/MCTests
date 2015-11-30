@@ -1,6 +1,7 @@
 import React from 'react';
 import QuestionListStore from '../stores/QuestionListStore';
 import QuestionListActions from '../actions/QuestionListActions';
+import QuestionItem from './QuestionItem';
 
 class QuestionList extends React.Component {
     constructor(props) {
@@ -24,32 +25,9 @@ class QuestionList extends React.Component {
 
     render() {
         let questions = this.state.questions.map((q) => {
-            let answers = q.answers.map((a, index) => {
-                return (
-                    <tr key={ index } className={ a.correct ? "success" : "" }  >
-                        <td className="col-sm-2"><small>#{ index + 1 }</small></td>
-                        <td className="col-sm-8">{ a.text }</td>
-                        <td className="col-sm-2"><i className={ a.correct ? "glyphicon glyphicon-ok" : "glyphicon glyphicon-remove" }></i></td>
-                    </tr>
-                )
-            });
             return (
-                <div key={ q.id } className="col-sm-3">
-                    <div className="panel panel-default">
-                        <div className="panel-heading">
-                            <h4>{ q.text }</h4>
-                        </div>
-                        <table className="table">
-                            <tbody>
-                                { answers }
-                            </tbody>
-                        </table>
-                        <div className="panel-footer">
-                            { q.categories.map((c, index) => { return ( index > 0 ? ', ' : '' ) + c }) }
-                        </div>
-                    </div>
-                </div>
-            )
+                <QuestionItem key={ q.id } text={ q.text } answers={ q.answers } categories={ q.categories }></QuestionItem>
+            );
         });
         let questionRows = [];
         let perRow = 4;
