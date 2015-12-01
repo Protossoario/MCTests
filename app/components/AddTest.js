@@ -52,7 +52,7 @@ class AddTest extends React.Component {
             <div>
                 <div className="container">
                     <div className="panel panel-default">
-                        <div className="panel-heading"><i className="glyphicon glyphicon-plus"></i> Create a new Test</div>
+                        <div className="panel-heading"><i className="glyphicon glyphicon-plus"></i> Create a New Test</div>
                         <div className="panel-body">
                             <div className={ "form-group " + this.state.testIdentifierState }>
                                 <label htmlFor="identifier">Test identifier:</label>
