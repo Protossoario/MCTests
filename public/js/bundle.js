@@ -81,30 +81,30 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var QuestionListActions = (function () {
-    function QuestionListActions() {
-        _classCallCheck(this, QuestionListActions);
+var TestListActions = (function () {
+    function TestListActions() {
+        _classCallCheck(this, TestListActions);
 
-        this.generateActions('getAllQuestionsSuccess', 'getAllQuestionsFail');
+        this.generateActions('getAllTestsSuccess', 'getAllTestFail');
     }
 
-    _createClass(QuestionListActions, [{
-        key: 'getAllQuestions',
-        value: function getAllQuestions() {
+    _createClass(TestListActions, [{
+        key: 'getAllTests',
+        value: function getAllTests() {
             var _this = this;
 
-            $.ajax({ url: 'http://localhost:8080/MCQuestions/api/questions' }).done(function (data) {
-                _this.actions.getAllQuestionsSuccess(data);
+            $.ajax({ url: '/api/tests' }).done(function (data) {
+                _this.actions.getAllTestsSuccess(data);
             }).fail(function (jqXhr) {
-                _this.actions.getAllQuestionsFail(jqXhr);
+                _this.actions.getAllTestFail(jqXhr);
             });
         }
     }]);
 
-    return QuestionListActions;
+    return TestListActions;
 })();
 
-exports.default = _alt2.default.createActions(QuestionListActions);
+exports.default = _alt2.default.createActions(TestListActions);
 
 },{"../alt":3}],3:[function(require,module,exports){
 'use strict';
@@ -356,9 +356,9 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _QuestionList = require('./QuestionList');
+var _TestList = require('./TestList');
 
-var _QuestionList2 = _interopRequireDefault(_QuestionList);
+var _TestList2 = _interopRequireDefault(_TestList);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -383,7 +383,7 @@ var Home = (function (_React$Component) {
       return _react2.default.createElement(
         'div',
         { className: 'container' },
-        _react2.default.createElement(_QuestionList2.default, null)
+        _react2.default.createElement(_TestList2.default, null)
       );
     }
   }]);
@@ -393,7 +393,7 @@ var Home = (function (_React$Component) {
 
 exports.default = Home;
 
-},{"./QuestionList":10,"react":"react"}],7:[function(require,module,exports){
+},{"./TestList":10,"react":"react"}],7:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -675,17 +675,15 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _QuestionListStore = require('../stores/QuestionListStore');
+var _reactRouter = require('react-router');
 
-var _QuestionListStore2 = _interopRequireDefault(_QuestionListStore);
+var _TestListStore = require('../stores/TestListStore');
 
-var _QuestionListActions = require('../actions/QuestionListActions');
+var _TestListStore2 = _interopRequireDefault(_TestListStore);
 
-var _QuestionListActions2 = _interopRequireDefault(_QuestionListActions);
+var _TestListActions = require('../actions/TestListActions');
 
-var _QuestionItem = require('./QuestionItem');
-
-var _QuestionItem2 = _interopRequireDefault(_QuestionItem);
+var _TestListActions2 = _interopRequireDefault(_TestListActions);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -695,29 +693,29 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var QuestionList = (function (_React$Component) {
-    _inherits(QuestionList, _React$Component);
+var TestList = (function (_React$Component) {
+    _inherits(TestList, _React$Component);
 
-    function QuestionList(props) {
-        _classCallCheck(this, QuestionList);
+    function TestList(props) {
+        _classCallCheck(this, TestList);
 
-        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(QuestionList).call(this, props));
+        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TestList).call(this, props));
 
-        _this.state = _QuestionListStore2.default.getState();
+        _this.state = _TestListStore2.default.getState();
         _this.onChange = _this.onChange.bind(_this);
         return _this;
     }
 
-    _createClass(QuestionList, [{
+    _createClass(TestList, [{
         key: 'componentDidMount',
         value: function componentDidMount() {
-            _QuestionListStore2.default.listen(this.onChange);
-            _QuestionListActions2.default.getAllQuestions();
+            _TestListStore2.default.listen(this.onChange);
+            _TestListActions2.default.getAllTests();
         }
     }, {
         key: 'componentWillUnmount',
         value: function componentWillUnmount() {
-            _QuestionListStore2.default.unlisten(this.onChange);
+            _TestListStore2.default.unlisten(this.onChange);
         }
     }, {
         key: 'onChange',
@@ -727,34 +725,69 @@ var QuestionList = (function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            var questions = this.state.questions.map(function (q) {
-                return _react2.default.createElement(_QuestionItem2.default, { key: q.id, text: q.text, answers: q.answers, categories: q.categories });
+            console.log(this.state.tests);
+            var tests = this.state.tests.map(function (t) {
+                var timeEstimation = t.questionIds.length * 1;
+                return _react2.default.createElement(
+                    _reactRouter.Link,
+                    { to: '/tests/' + t.testIdentifier, key: t.testIdentifier, className: 'list-group-item animated fadeIn' },
+                    _react2.default.createElement(
+                        'h4',
+                        { className: 'list-group-item-heading' },
+                        _react2.default.createElement(
+                            'strong',
+                            null,
+                            t.testIdentifier
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'p',
+                        { className: 'list-group-item-text' },
+                        'Estimated length: ',
+                        _react2.default.createElement(
+                            'strong',
+                            null,
+                            timeEstimation + (timeEstimation == 1 ? ' minute' : ' minutes')
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'p',
+                        { className: 'list-group-item-text' },
+                        'Questions: ',
+                        _react2.default.createElement(
+                            'span',
+                            { className: 'badge pull-right' },
+                            t.questionIds.length
+                        )
+                    )
+                );
             });
-            var questionRows = [];
-            var perRow = 4;
-            for (var i = 0; i < questions.length; i += perRow) {
-                questionRows.push(_react2.default.createElement(
-                    'div',
-                    { key: i, className: 'row' },
-                    questions.slice(i, i + perRow)
-                ));
-            }
             return _react2.default.createElement(
                 'div',
-                null,
-                questionRows
+                { className: 'container' },
+                _react2.default.createElement(
+                    'div',
+                    { className: 'row' },
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'col-sm-6' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'list-group' },
+                            tests
+                        )
+                    )
+                )
             );
         }
     }]);
 
-    return QuestionList;
+    return TestList;
 })(_react2.default.Component);
 
-;
+exports.default = TestList;
 
-exports.default = QuestionList;
-
-},{"../actions/QuestionListActions":2,"../stores/QuestionListStore":14,"./QuestionItem":9,"react":"react"}],11:[function(require,module,exports){
+},{"../actions/TestListActions":2,"../stores/TestListStore":14,"react":"react","react-router":"react-router"}],11:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -929,40 +962,40 @@ var _alt = require('../alt');
 
 var _alt2 = _interopRequireDefault(_alt);
 
-var _QuestionListActions = require('../actions/QuestionListActions');
+var _TestListActions = require('../actions/TestListActions');
 
-var _QuestionListActions2 = _interopRequireDefault(_QuestionListActions);
+var _TestListActions2 = _interopRequireDefault(_TestListActions);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var QuestionListStore = (function () {
-    function QuestionListStore() {
-        _classCallCheck(this, QuestionListStore);
+var TestListStore = (function () {
+    function TestListStore() {
+        _classCallCheck(this, TestListStore);
 
-        this.bindActions(_QuestionListActions2.default);
-        this.questions = [];
+        this.bindActions(_TestListActions2.default);
+        this.tests = [];
     }
 
-    _createClass(QuestionListStore, [{
-        key: 'onGetAllQuestionsSuccess',
-        value: function onGetAllQuestionsSuccess(data) {
-            this.questions = data;
+    _createClass(TestListStore, [{
+        key: 'onGetAllTestsSuccess',
+        value: function onGetAllTestsSuccess(data) {
+            this.tests = data;
         }
     }, {
-        key: 'onGetAllQuestionsFail',
-        value: function onGetAllQuestionsFail(jqXhr) {
+        key: 'onGetAllTestsFail',
+        value: function onGetAllTestsFail(jqXhr) {
             toastr.error(jqXhr.responseJSON && jqXhr.responseJSON.message || jqXhr.responseText || jqXhr.statusText);
         }
     }]);
 
-    return QuestionListStore;
+    return TestListStore;
 })();
 
-exports.default = _alt2.default.createStore(QuestionListStore);
+exports.default = _alt2.default.createStore(TestListStore);
 
-},{"../actions/QuestionListActions":2,"../alt":3}],15:[function(require,module,exports){
+},{"../actions/TestListActions":2,"../alt":3}],15:[function(require,module,exports){
 var pSlice = Array.prototype.slice;
 var objectKeys = require('./lib/keys.js');
 var isArguments = require('./lib/is_arguments.js');
