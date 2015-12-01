@@ -19,7 +19,7 @@ var AddTestActions = (function () {
     function AddTestActions() {
         _classCallCheck(this, AddTestActions);
 
-        this.generateActions('getAllQuestionsSuccess', 'getAllQuestionsFail');
+        this.generateActions('getAllQuestionsSuccess', 'getAllQuestionsFail', 'addTestSuccess', 'addTestFail', 'updateIdentifier', 'invalidTestIdentifier', 'invalidNumberOfQuestions');
     }
 
     _createClass(AddTestActions, [{
@@ -37,6 +37,24 @@ var AddTestActions = (function () {
         key: 'toggleQuestionSelected',
         value: function toggleQuestionSelected(id) {
             this.dispatch(id);
+        }
+    }, {
+        key: 'addTest',
+        value: function addTest(testIdentifier, questionIds) {
+            var _this2 = this;
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/tests',
+                data: {
+                    testIdentifier: testIdentifier,
+                    questionIds: questionIds
+                }
+            }).done(function (data) {
+                _this2.actions.addTestSuccess(data.message);
+            }).fail(function (jqXhr) {
+                _this2.actions.addTestFail(jqXhr.responseJSON.message);
+            });
         }
     }]);
 
@@ -165,6 +183,35 @@ var AddTest = (function (_React$Component) {
             this.setState(state);
         }
     }, {
+        key: 'handleSubmit',
+        value: function handleSubmit(event) {
+            var testIdentifier = this.state.testIdentifier;
+            // Filter out questions which are not selected, then return an array of their ids
+            var questionIds = this.state.questions.filter(function (q) {
+                return q.selected;
+            }).map(function (q) {
+                return q.id;
+            });
+
+            var valid = true;
+
+            // Check if test identifier conforms to the valid format
+            if (!/^\w{5,}-\d{4}-\d{2}-\d{2}/.test(testIdentifier)) {
+                _AddTestActions2.default.invalidTestIdentifier();
+                this.refs.testIdentifier.getDOMNode().focus();
+                valid = false;
+            }
+
+            if (questionIds.length == 0) {
+                _AddTestActions2.default.invalidNumberOfQuestions();
+                valid = false;
+            }
+
+            if (valid) {
+                _AddTestActions2.default.addTest(testIdentifier, questionIds);
+            }
+        }
+    }, {
         key: 'render',
         value: function render() {
             return _react2.default.createElement(
@@ -172,28 +219,68 @@ var AddTest = (function (_React$Component) {
                 null,
                 _react2.default.createElement(
                     'div',
-                    { className: 'page-header col-xs-12' },
-                    _react2.default.createElement(
-                        'h3',
-                        null,
-                        _react2.default.createElement('i', { className: 'glyphicon glyphicon-th-list' }),
-                        ' Question Catalogue'
-                    )
-                ),
-                _react2.default.createElement(
-                    'div',
                     { className: 'container' },
                     _react2.default.createElement(
                         'div',
-                        { className: 'form-group' },
+                        { className: 'panel panel-default' },
                         _react2.default.createElement(
-                            'label',
-                            { htmlFor: 'categories' },
-                            'Filter by category'
+                            'div',
+                            { className: 'panel-heading' },
+                            _react2.default.createElement('i', { className: 'glyphicon glyphicon-plus' }),
+                            ' Create a new Test'
                         ),
-                        _react2.default.createElement('input', { className: 'form-control', type: 'text', id: 'categories', placeholder: 'Type the tag names separated by commas (e.g. math, geometry, physics)' })
-                    ),
-                    _react2.default.createElement(_QuestionCatalogue2.default, { questions: this.state.questions, toggleQuestion: _AddTestActions2.default.toggleQuestionSelected })
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'panel-body' },
+                            _react2.default.createElement(
+                                'div',
+                                { className: "form-group " + this.state.testIdentifierState },
+                                _react2.default.createElement(
+                                    'label',
+                                    { htmlFor: 'identifier' },
+                                    'Test identifier:'
+                                ),
+                                _react2.default.createElement('input', { className: 'form-control', type: 'text', ref: 'testIdentifier', id: 'identifier', value: this.state.testIdentifier, onChange: _AddTestActions2.default.updateIdentifier, placeholder: 'Input an identifier for the test (e.g. \'CE902-2015-12-09\')' }),
+                                _react2.default.createElement(
+                                    'span',
+                                    { className: 'help-block' },
+                                    this.state.testIdentifierHelpBlock ? this.state.testIdentifierHelpBlock : "The identifier must consist of a module name that's at least 5 characters long, a dash, and date in the format 'YYYY-MM-DD'."
+                                )
+                            ),
+                            _react2.default.createElement(
+                                'button',
+                                { className: 'btn btn-primary', onClick: this.handleSubmit.bind(this) },
+                                _react2.default.createElement('i', { className: 'glyphicon glyphicon-ok' }),
+                                ' Submit'
+                            )
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'panel-heading' },
+                            _react2.default.createElement('i', { className: 'glyphicon glyphicon-th-list' }),
+                            ' Question Catalogue'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'panel-body' },
+                            _react2.default.createElement(
+                                'div',
+                                { className: "form-group " + this.state.questionsState },
+                                _react2.default.createElement(
+                                    'label',
+                                    { htmlFor: 'categories' },
+                                    'Filter by category'
+                                ),
+                                _react2.default.createElement('input', { className: 'form-control', type: 'text', id: 'categories', placeholder: 'Type the tag names separated by commas (e.g. math, geometry, physics)' }),
+                                _react2.default.createElement(
+                                    'span',
+                                    { className: 'help-block' },
+                                    this.state.questionsHelpBlock
+                                )
+                            ),
+                            _react2.default.createElement(_QuestionCatalogue2.default, { questions: this.state.questions, toggleQuestion: _AddTestActions2.default.toggleQuestionSelected })
+                        )
+                    )
                 )
             );
         }
@@ -433,7 +520,7 @@ var QuestionItem = (function (_React$Component) {
                 { className: "col-sm-3" },
                 _react2.default.createElement(
                     "div",
-                    { className: this.props.selected ? "panel panel-info" : "panel panel-default", onClick: this.props.toggle !== undefined ? this.props.toggle.bind(null, this.props.id) : null },
+                    { className: "panel panel-question " + (this.props.selected ? "panel-info" : "panel-default"), onClick: this.props.toggle !== undefined ? this.props.toggle.bind(null, this.props.id) : null, style: { 'cursor': 'hand', 'cursor': 'pointer' } },
                     _react2.default.createElement(
                         "div",
                         { className: "panel-heading" },
@@ -683,6 +770,39 @@ var AddTestStore = (function () {
                 }
                 i++;
             }
+
+            this.questionsState = '';
+            this.questionsHelpBlock = '';
+        }
+    }, {
+        key: 'onUpdateIdentifier',
+        value: function onUpdateIdentifier(event) {
+            this.testIdentifier = event.target.value;
+
+            this.testIdentifierState = '';
+            this.testIdentifierHelpBlock = '';
+        }
+    }, {
+        key: 'onAddTestSuccess',
+        value: function onAddTestSuccess(message) {
+            toastr.success(message, 'Success!', { timeOut: 5000 });
+        }
+    }, {
+        key: 'onAddTestFail',
+        value: function onAddTestFail(message) {
+            toastr.error(message);
+        }
+    }, {
+        key: 'onInvalidTestIdentifier',
+        value: function onInvalidTestIdentifier() {
+            this.testIdentifierState = 'has-error';
+            this.testIdentifierHelpBlock = 'Please make sure to enter a test identifier which conforms to the pattern of \'XXXXX-YYYY-MM-DD\'.';
+        }
+    }, {
+        key: 'onInvalidNumberOfQuestions',
+        value: function onInvalidNumberOfQuestions() {
+            this.questionsState = 'has-error';
+            this.questionsHelpBlock = 'Every test must include at least one question.';
         }
     }]);
 

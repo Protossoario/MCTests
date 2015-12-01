@@ -28,6 +28,34 @@ class AddTestStore {
             }
             i++;
         }
+
+        this.questionsState = '';
+        this.questionsHelpBlock = '';
+    }
+
+    onUpdateIdentifier(event) {
+        this.testIdentifier = event.target.value;
+
+        this.testIdentifierState = '';
+        this.testIdentifierHelpBlock = '';
+    }
+
+    onAddTestSuccess(message) {
+        toastr.success(message, 'Success!', { timeOut: 5000 });
+    }
+
+    onAddTestFail(message) {
+        toastr.error(message);
+    }
+
+    onInvalidTestIdentifier() {
+        this.testIdentifierState = 'has-error';
+        this.testIdentifierHelpBlock = 'Please make sure to enter a test identifier which conforms to the pattern of \'XXXXX-YYYY-MM-DD\'.';
+    }
+
+    onInvalidNumberOfQuestions() {
+        this.questionsState = 'has-error';
+        this.questionsHelpBlock = 'Every test must include at least one question.';
     }
 }
 

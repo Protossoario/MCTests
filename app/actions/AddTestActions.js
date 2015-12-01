@@ -4,7 +4,12 @@ class AddTestActions {
     constructor() {
         this.generateActions(
             'getAllQuestionsSuccess',
-            'getAllQuestionsFail'
+            'getAllQuestionsFail',
+            'addTestSuccess',
+            'addTestFail',
+            'updateIdentifier',
+            'invalidTestIdentifier',
+            'invalidNumberOfQuestions'
         );
     }
 
@@ -20,6 +25,23 @@ class AddTestActions {
 
     toggleQuestionSelected(id) {
         this.dispatch(id);
+    }
+
+    addTest(testIdentifier, questionIds) {
+        $.ajax({
+            type: 'POST',
+            url: '/api/tests',
+            data: {
+                testIdentifier: testIdentifier,
+                questionIds: questionIds
+            }
+        })
+            .done((data) => {
+                this.actions.addTestSuccess(data.message);
+            })
+            .fail((jqXhr) => {
+                this.actions.addTestFail(jqXhr.responseJSON.message);
+            });
     }
 }
 

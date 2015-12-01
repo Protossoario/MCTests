@@ -16,7 +16,7 @@ class QuestionItem extends React.Component {
         );
         return (
             <div className="col-sm-3">
-                <div className={ this.props.selected ? "panel panel-info" : "panel panel-default" } onClick={ this.props.toggle !== undefined ? this.props.toggle.bind(null, this.props.id) : null }>
+                <div className={ "panel panel-question " + (this.props.selected ? "panel-info" : "panel-default") } onClick={ this.props.toggle !== undefined ? this.props.toggle.bind(null, this.props.id) : null } style={{ 'cursor': 'hand', 'cursor': 'pointer' }}>
                     <div className="panel-heading">
                         <h4>{ selectionIcon }{ this.props.text }</h4>
                     </div>
