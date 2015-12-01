@@ -40,7 +40,7 @@ class AddTestActions {
                 this.actions.addTestSuccess(data.message);
             })
             .fail((jqXhr) => {
-                this.actions.addTestFail(jqXhr.responseJSON.message);
+                this.actions.addTestFail(jqXhr.responseJSON ? jqXhr.responseJSON.message : 'Server unreachable.');
             });
     }
 }

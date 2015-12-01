@@ -53,7 +53,7 @@ var AddTestActions = (function () {
             }).done(function (data) {
                 _this2.actions.addTestSuccess(data.message);
             }).fail(function (jqXhr) {
-                _this2.actions.addTestFail(jqXhr.responseJSON.message);
+                _this2.actions.addTestFail(jqXhr.responseJSON ? jqXhr.responseJSON.message : 'Server unreachable.');
             });
         }
     }]);

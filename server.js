@@ -12,12 +12,24 @@ var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 
+var mongoose = require('mongoose');
+
+var config = require('./config');
+
+mongoose.connect(config.database);
+mongoose.connection.on('error', function() {
+  console.info('Error: Could not connect to MongoDB. Did you forget to run `mongod`?');
+});
+
 var app = express();
 
 app.set('port', process.env.PORT || 3000);
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use('/api/tests', require('./api/tests'));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function(req, res) {
