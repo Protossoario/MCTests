@@ -45,11 +45,12 @@ var AddTestActions = (function () {
 
             $.ajax({
                 type: 'POST',
+                contentType: 'application/json',
                 url: '/api/tests',
-                data: {
+                data: JSON.stringify({
                     testIdentifier: testIdentifier,
                     questionIds: questionIds
-                }
+                })
             }).done(function (data) {
                 _this2.actions.addTestSuccess(data.message);
             }).fail(function (jqXhr) {
@@ -198,7 +199,7 @@ var AddTest = (function (_React$Component) {
             // Check if test identifier conforms to the valid format
             if (!/^\w{5,}-\d{4}-\d{2}-\d{2}/.test(testIdentifier)) {
                 _AddTestActions2.default.invalidTestIdentifier();
-                this.refs.testIdentifier.getDOMNode().focus();
+                this.refs.testIdentifier.focus();
                 valid = false;
             }
 

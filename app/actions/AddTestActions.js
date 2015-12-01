@@ -30,11 +30,12 @@ class AddTestActions {
     addTest(testIdentifier, questionIds) {
         $.ajax({
             type: 'POST',
+            contentType: 'application/json',
             url: '/api/tests',
-            data: {
+            data: JSON.stringify({
                 testIdentifier: testIdentifier,
                 questionIds: questionIds
-            }
+            })
         })
             .done((data) => {
                 this.actions.addTestSuccess(data.message);

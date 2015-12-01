@@ -33,7 +33,7 @@ class AddTest extends React.Component {
         // Check if test identifier conforms to the valid format
         if (!/^\w{5,}-\d{4}-\d{2}-\d{2}/.test(testIdentifier)) {
             AddTestActions.invalidTestIdentifier();
-            this.refs.testIdentifier.getDOMNode().focus();
+            this.refs.testIdentifier.focus();
             valid = false;
         }
 

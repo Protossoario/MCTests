@@ -10,7 +10,7 @@ router.post('/', function(req, res) {
 
     test.save(function(err) {
         if (err) {
-            res.status(400).send({ success: false, message: err });
+            res.status(400).send({ success: false, message: err.message });
         } else {
             res.send({ success: true, message: 'New test added successfully!' });
         }
@@ -19,9 +19,9 @@ router.post('/', function(req, res) {
 
 router.get('/', function(req, res) {
     // get all tests
-    Test.find({}, function(err, tests) {
+    Test.find({}, '_id testIdentifier questionIds', function(err, tests) {
         if (err) {
-            res.status(404).send({ message: err });
+            res.status(404).send({ message: err.message });
         } else {
             res.send(tests);
         }
@@ -30,9 +30,9 @@ router.get('/', function(req, res) {
 
 router.get('/:id', function(req, res) {
     // get test which matches id = req.params.id
-    Test.findOne({ testIdentifier: req.params.id }, function(err, test) {
+    Test.findOne({ testIdentifier: req.params.id }, '_id testIdentifier questionIds', function(err, test) {
         if (err) {
-            res.status(404).send({ message: err });
+            res.status(404).send({ message: err.message });
         } else if (test) {
             res.send(test);
         } else {
