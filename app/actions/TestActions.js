@@ -8,7 +8,8 @@ class TestActions {
             'getAllQuestionsSuccess',
             'getAllQuestionsFail',
             'updateTestSuccess',
-            'updateTestFail'
+            'updateTestFail',
+            'invalidNumberOfQuestions'
         );
     }
 
@@ -42,7 +43,7 @@ class TestActions {
         $.ajax({
             type: 'PUT',
             contentType: 'application/json',
-            url: 'api/tests/' + testIdentifier,
+            url: '/api/tests/' + testIdentifier,
             data: JSON.stringify({
                 questionIds: questionIds
             })

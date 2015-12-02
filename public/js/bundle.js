@@ -85,7 +85,7 @@ var TestActions = (function () {
     function TestActions() {
         _classCallCheck(this, TestActions);
 
-        this.generateActions('getTestSuccess', 'getTestFail', 'getAllQuestionsSuccess', 'getAllQuestionsFail', 'updateTestSuccess', 'updateTestFail');
+        this.generateActions('getTestSuccess', 'getTestFail', 'getAllQuestionsSuccess', 'getAllQuestionsFail', 'updateTestSuccess', 'updateTestFail', 'invalidNumberOfQuestions');
     }
 
     // After succesfully obtaining test data, dispatch method to query all questions, otherwise there's no point
@@ -126,7 +126,7 @@ var TestActions = (function () {
             $.ajax({
                 type: 'PUT',
                 contentType: 'application/json',
-                url: 'api/tests/' + testIdentifier,
+                url: '/api/tests/' + testIdentifier,
                 data: JSON.stringify({
                     questionIds: questionIds
                 })
@@ -1282,11 +1282,17 @@ var TestStore = (function () {
         value: function onGetTestSuccess(data) {
             this.testIdentifier = data.testIdentifier;
             this.questionIds = data.questionIds;
+            this.questionsState = '';
+            this.questionsHelpBlock = '';
         }
     }, {
         key: 'onGetTestFail',
         value: function onGetTestFail(message) {
             toastr.error(message);
+            this.testIdentifier = '';
+            this.questionIds = [];
+            this.questionsState = '';
+            this.questionsHelpBlock = '';
         }
     }, {
         key: 'onGetAllQuestionsSuccess',
@@ -1330,6 +1336,12 @@ var TestStore = (function () {
         key: 'onUpdateTestFail',
         value: function onUpdateTestFail(message) {
             toastr.error(message);
+        }
+    }, {
+        key: 'onInvalidNumberOfQuestions',
+        value: function onInvalidNumberOfQuestions() {
+            this.questionsState = 'has-error';
+            this.questionsHelpBlock = 'Every test must include at least one question.';
         }
     }]);
 

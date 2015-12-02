@@ -14,10 +14,16 @@ class TestStore {
     onGetTestSuccess(data) {
         this.testIdentifier = data.testIdentifier;
         this.questionIds = data.questionIds;
+        this.questionsState = '';
+        this.questionsHelpBlock = '';
     }
 
     onGetTestFail(message) {
         toastr.error(message);
+        this.testIdentifier = '';
+        this.questionIds = [];
+        this.questionsState = '';
+        this.questionsHelpBlock = '';
     }
 
     onGetAllQuestionsSuccess(data) {
@@ -54,6 +60,11 @@ class TestStore {
 
     onUpdateTestFail(message) {
         toastr.error(message);
+    }
+
+    onInvalidNumberOfQuestions() {
+        this.questionsState = 'has-error';
+        this.questionsHelpBlock = 'Every test must include at least one question.';
     }
 }
 

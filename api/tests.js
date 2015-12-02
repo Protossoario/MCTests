@@ -3,12 +3,12 @@ var Test = require('../models/test');
 var router = express.Router();
 
 router.post('/', function(req, res) {
-    var test = new Test({
+    var newTest = new Test({
         testIdentifier: req.body.testIdentifier,
         questionIds: req.body.questionIds
     });
 
-    test.save(function(err) {
+    newTest.save(function(err) {
         if (err) {
             res.status(400).send({ success: false, message: err.message });
         } else {
@@ -29,7 +29,7 @@ router.get('/', function(req, res) {
 });
 
 router.get('/:id', function(req, res) {
-    // get test which matches id = req.params.id
+    // get test which matches testIdentifier = req.params.id
     Test.findOne({ testIdentifier: req.params.id }, '_id testIdentifier questionIds', function(err, test) {
         if (err) {
             res.status(404).send({ message: err.message });
@@ -39,6 +39,20 @@ router.get('/:id', function(req, res) {
             res.status(404).send({ message: 'Test doesn\'t exist, verify that the identifier is correct.' });
         }
     })
+});
+
+router.put('/:id', function(req, res) {
+    // Update test which matches testIdentifier = req.params.id
+    Test.findOne({ testIdentifier: req.params.id }, function(err, test) {
+        test.questionIds = req.body.questionIds;
+        test.save(function(err) {
+            if (err) {
+                res.status(400).send({ success: false, message: err.message });
+            } else {
+                res.send({ success: true, message: 'Test saved successfully!' });
+            }
+        });
+    });
 });
 
 module.exports = router;
