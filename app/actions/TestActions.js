@@ -9,7 +9,8 @@ class TestActions {
             'getAllQuestionsFail',
             'updateTestSuccess',
             'updateTestFail',
-            'invalidNumberOfQuestions'
+            'invalidNumberOfQuestions',
+            'updateFilter'
         );
     }
 

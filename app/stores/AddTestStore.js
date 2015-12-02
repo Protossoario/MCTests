@@ -9,6 +9,7 @@ class AddTestStore {
         this.testIdentifierHelpBlock = '';
         this.questionsState = '';
         this.questionsHelpBlock = '';
+        this.filter = '';
     }
 
     onGetAllQuestionsSuccess(data) {
@@ -60,6 +61,10 @@ class AddTestStore {
     onInvalidNumberOfQuestions() {
         this.questionsState = 'has-error';
         this.questionsHelpBlock = 'Every test must include at least one question.';
+    }
+
+    onUpdateFilter(event) {
+        this.filter = event.target.value;
     }
 }
 
