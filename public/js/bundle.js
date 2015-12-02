@@ -338,7 +338,13 @@ var AddTest = (function (_React$Component) {
                             'div',
                             { className: 'panel-heading' },
                             _react2.default.createElement('i', { className: 'glyphicon glyphicon-th-list' }),
-                            ' Question Catalogue'
+                            ' Question Catalogue',
+                            _react2.default.createElement(
+                                'a',
+                                { className: 'pull-right btn btn-xs btn-info', href: 'http://localhost:8080/MCQuestions/addQuestion', target: '_blank', role: 'button' },
+                                'Add More Questions ',
+                                _react2.default.createElement('i', { className: 'glyphicon glyphicon-chevron-right' })
+                            )
                         ),
                         _react2.default.createElement(
                             'div',
@@ -608,8 +614,6 @@ var QuestionCatalogue = (function (_React$Component) {
     _createClass(QuestionCatalogue, [{
         key: 'matchFilter',
         value: function matchFilter(question, regex) {
-            console.log(question.categories.join());
-            console.log(regex);
             return regex.test(question.categories.join());
         }
     }, {
@@ -920,7 +924,13 @@ var Test = (function (_React$Component) {
                             'div',
                             { className: 'panel-heading' },
                             _react2.default.createElement('i', { className: 'glyphicon glyphicon-th-list' }),
-                            ' Question Catalogue'
+                            ' Question Catalogue',
+                            _react2.default.createElement(
+                                'a',
+                                { className: 'pull-right btn btn-xs btn-info', href: 'http://localhost:8080/MCQuestions/addQuestion', target: '_blank', role: 'button' },
+                                'Add More Questions ',
+                                _react2.default.createElement('i', { className: 'glyphicon glyphicon-chevron-right' })
+                            )
                         ),
                         _react2.default.createElement(
                             'div',

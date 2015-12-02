@@ -3,8 +3,6 @@ import QuestionItem from './QuestionItem';
 
 class QuestionCatalogue extends React.Component {
     matchFilter(question, regex) {
-        console.log(question.categories.join());
-        console.log(regex);
         return regex.test(question.categories.join());
     }
 
