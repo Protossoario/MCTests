@@ -9,7 +9,8 @@ class AddTestActions {
             'addTestFail',
             'updateIdentifier',
             'invalidTestIdentifier',
-            'invalidNumberOfQuestions'
+            'invalidNumberOfQuestions',
+            'updateFilter'
         );
     }
 

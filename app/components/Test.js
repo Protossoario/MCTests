@@ -59,10 +59,10 @@ class Test extends React.Component {
                         <div className="panel-body">
                             <div className={ "form-group " + this.state.questionsState }>
                                 <label htmlFor="categories">Filter by category</label>
-                                <input className="form-control" type="text" id="categories" placeholder="Type the tag names separated by commas (e.g. math, geometry, physics)" />
+                                <input className="form-control" type="text" id="categories" onChange={ TestActions.updateFilter } placeholder="Type the tag names separated by commas or spaces (e.g. math, geometry, physics)" />
                                 <span className="help-block">{ this.state.questionsHelpBlock }</span>
                             </div>
-                            <QuestionCatalogue questions={ this.state.questions } toggleQuestion={ TestActions.toggleQuestionSelected } />
+                            <QuestionCatalogue questions={ this.state.questions } toggleQuestion={ TestActions.toggleQuestionSelected } filter={ this.state.filter } />
                         </div>
                     </div>
                 </div>

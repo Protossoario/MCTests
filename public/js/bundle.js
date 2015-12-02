@@ -19,7 +19,7 @@ var AddTestActions = (function () {
     function AddTestActions() {
         _classCallCheck(this, AddTestActions);
 
-        this.generateActions('getAllQuestionsSuccess', 'getAllQuestionsFail', 'addTestSuccess', 'addTestFail', 'updateIdentifier', 'invalidTestIdentifier', 'invalidNumberOfQuestions');
+        this.generateActions('getAllQuestionsSuccess', 'getAllQuestionsFail', 'addTestSuccess', 'addTestFail', 'updateIdentifier', 'invalidTestIdentifier', 'invalidNumberOfQuestions', 'updateFilter');
     }
 
     _createClass(AddTestActions, [{
@@ -85,7 +85,7 @@ var TestActions = (function () {
     function TestActions() {
         _classCallCheck(this, TestActions);
 
-        this.generateActions('getTestSuccess', 'getTestFail', 'getAllQuestionsSuccess', 'getAllQuestionsFail', 'updateTestSuccess', 'updateTestFail', 'invalidNumberOfQuestions');
+        this.generateActions('getTestSuccess', 'getTestFail', 'getAllQuestionsSuccess', 'getAllQuestionsFail', 'updateTestSuccess', 'updateTestFail', 'invalidNumberOfQuestions', 'updateFilter');
     }
 
     // After succesfully obtaining test data, dispatch method to query all questions, otherwise there's no point
@@ -351,14 +351,14 @@ var AddTest = (function (_React$Component) {
                                     { htmlFor: 'categories' },
                                     'Filter by category'
                                 ),
-                                _react2.default.createElement('input', { className: 'form-control', type: 'text', id: 'categories', placeholder: 'Type the tag names separated by commas (e.g. math, geometry, physics)' }),
+                                _react2.default.createElement('input', { className: 'form-control', type: 'text', id: 'categories', onChange: _AddTestActions2.default.updateFilter, placeholder: 'Type the tag names separated by commas or spaces (e.g. math, geometry, physics)' }),
                                 _react2.default.createElement(
                                     'span',
                                     { className: 'help-block' },
                                     this.state.questionsHelpBlock
                                 )
                             ),
-                            _react2.default.createElement(_QuestionCatalogue2.default, { questions: this.state.questions, toggleQuestion: _AddTestActions2.default.toggleQuestionSelected })
+                            _react2.default.createElement(_QuestionCatalogue2.default, { questions: this.state.questions, toggleQuestion: _AddTestActions2.default.toggleQuestionSelected, filter: this.state.filter })
                         )
                     )
                 )
@@ -606,26 +606,80 @@ var QuestionCatalogue = (function (_React$Component) {
     }
 
     _createClass(QuestionCatalogue, [{
+        key: 'matchFilter',
+        value: function matchFilter(question, regex) {
+            console.log(question.categories.join());
+            console.log(regex);
+            return regex.test(question.categories.join());
+        }
+    }, {
+        key: 'renderQuestionRows',
+        value: function renderQuestionRows(selectedQuestions, filteredQuestions) {
+            var questionRows = [];
+            var questionBuffer = [];
+            var perRow = 4;
+            for (var i = 0; i < selectedQuestions.length; i++) {
+                if (questionBuffer.length === perRow) {
+                    console.log(questionBuffer);
+                    questionRows.push(_react2.default.createElement(
+                        'div',
+                        { key: 'selected' + i, className: 'row' },
+                        questionBuffer
+                    ));
+                    questionBuffer = [];
+                    console.log('Hello');
+                    console.log(questionBuffer);
+                    console.log(questionRows);
+                }
+                questionBuffer.push(selectedQuestions[i]);
+            }
+            for (var i = 0; i < filteredQuestions.length; i++) {
+                if (questionBuffer.length === perRow) {
+                    questionRows.push(_react2.default.createElement(
+                        'div',
+                        { key: 'filtered' + i, className: 'row' },
+                        questionBuffer
+                    ));
+                    questionBuffer = [];
+                }
+                questionBuffer.push(filteredQuestions[i]);
+            }
+            questionRows.push(_react2.default.createElement(
+                'div',
+                { key: 'last', className: 'row' },
+                questionBuffer
+            ));
+            return questionRows;
+        }
+    }, {
         key: 'render',
         value: function render() {
-            var _this2 = this;
+            var selectedQuestions = [];
+            var filteredQuestions = [];
 
-            var questions = this.props.questions.map(function (q) {
-                return _react2.default.createElement(_QuestionItem2.default, { key: q.id, text: q.text, answers: q.answers, categories: q.categories, toggle: _this2.props.toggleQuestion, selected: q.selected, id: q.id });
-            });
-            var questionRows = [];
-            var perRow = 4;
-            for (var i = 0; i < questions.length; i += perRow) {
-                questionRows.push(_react2.default.createElement(
-                    'div',
-                    { key: i, className: 'row' },
-                    questions.slice(i, i + perRow)
-                ));
+            // Convert the user input into a regular expression to match any of the categories specified
+            // 1. split the input by either commas or spaces
+            // 2. then join the resulting array into a string, separating the tokens with the OR operator for regexes
+            var filterRegex = new RegExp(this.props.filter.split(/\s|,/).join('|'), 'i');
+
+            for (var i = 0; i < this.props.questions.length; i++) {
+                var q = this.props.questions[i];
+                var qRender = _react2.default.createElement(_QuestionItem2.default, { key: q.id, text: q.text, answers: q.answers, categories: q.categories, toggle: this.props.toggleQuestion, selected: q.selected, id: q.id });
+                if (q.selected) {
+                    selectedQuestions.push(qRender);
+                } else if (this.matchFilter(q, filterRegex)) {
+                    filteredQuestions.push(qRender);
+                }
             }
+
+            if (filteredQuestions.length === 0) {
+                this.props.noMatchAction();
+            }
+
             return _react2.default.createElement(
                 'div',
                 null,
-                questionRows
+                this.renderQuestionRows(selectedQuestions, filteredQuestions)
             );
         }
     }]);
@@ -883,14 +937,14 @@ var Test = (function (_React$Component) {
                                     { htmlFor: 'categories' },
                                     'Filter by category'
                                 ),
-                                _react2.default.createElement('input', { className: 'form-control', type: 'text', id: 'categories', placeholder: 'Type the tag names separated by commas (e.g. math, geometry, physics)' }),
+                                _react2.default.createElement('input', { className: 'form-control', type: 'text', id: 'categories', onChange: _TestActions2.default.updateFilter, placeholder: 'Type the tag names separated by commas or spaces (e.g. math, geometry, physics)' }),
                                 _react2.default.createElement(
                                     'span',
                                     { className: 'help-block' },
                                     this.state.questionsHelpBlock
                                 )
                             ),
-                            _react2.default.createElement(_QuestionCatalogue2.default, { questions: this.state.questions, toggleQuestion: _TestActions2.default.toggleQuestionSelected })
+                            _react2.default.createElement(_QuestionCatalogue2.default, { questions: this.state.questions, toggleQuestion: _TestActions2.default.toggleQuestionSelected, filter: this.state.filter })
                         )
                     )
                 )
@@ -1130,6 +1184,7 @@ var AddTestStore = (function () {
         this.testIdentifierHelpBlock = '';
         this.questionsState = '';
         this.questionsHelpBlock = '';
+        this.filter = '';
     }
 
     _createClass(AddTestStore, [{
@@ -1190,6 +1245,11 @@ var AddTestStore = (function () {
         value: function onInvalidNumberOfQuestions() {
             this.questionsState = 'has-error';
             this.questionsHelpBlock = 'Every test must include at least one question.';
+        }
+    }, {
+        key: 'onUpdateFilter',
+        value: function onUpdateFilter(event) {
+            this.filter = event.target.value;
         }
     }]);
 
@@ -1275,6 +1335,7 @@ var TestStore = (function () {
         this.questions = [];
         this.questionsState = '';
         this.questionsHelpBlock = '';
+        this.filter = '';
     }
 
     _createClass(TestStore, [{
@@ -1342,6 +1403,11 @@ var TestStore = (function () {
         value: function onInvalidNumberOfQuestions() {
             this.questionsState = 'has-error';
             this.questionsHelpBlock = 'Every test must include at least one question.';
+        }
+    }, {
+        key: 'onUpdateFilter',
+        value: function onUpdateFilter(event) {
+            this.filter = event.target.value;
         }
     }]);
 
