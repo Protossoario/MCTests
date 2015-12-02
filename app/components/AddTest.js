@@ -23,7 +23,7 @@ class AddTest extends React.Component {
         this.setState(state);
     }
 
-    handleSubmit(event) {
+    handleSubmit() {
         var testIdentifier = this.state.testIdentifier;
         // Filter out questions which are not selected, then return an array of their ids
         var questionIds = this.state.questions.filter((q) => { return q.selected; }).map((q) => { return q.id; });

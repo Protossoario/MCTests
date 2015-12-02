@@ -24,7 +24,6 @@ class TestList extends React.Component {
     }
 
     render() {
-        console.log(this.state.tests);
         let tests = this.state.tests.map((t) => {
             let timeEstimation = t.questionIds.length * 1;
             return (

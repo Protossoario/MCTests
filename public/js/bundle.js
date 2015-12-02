@@ -64,7 +64,86 @@ var AddTestActions = (function () {
 
 exports.default = _alt2.default.createActions(AddTestActions);
 
-},{"../alt":3}],2:[function(require,module,exports){
+},{"../alt":4}],2:[function(require,module,exports){
+'use strict';
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _alt = require('../alt');
+
+var _alt2 = _interopRequireDefault(_alt);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TestActions = (function () {
+    function TestActions() {
+        _classCallCheck(this, TestActions);
+
+        this.generateActions('getTestSuccess', 'getTestFail', 'getAllQuestionsSuccess', 'getAllQuestionsFail', 'updateTestSuccess', 'updateTestFail');
+    }
+
+    // After succesfully obtaining test data, dispatch method to query all questions, otherwise there's no point
+
+    _createClass(TestActions, [{
+        key: 'getTest',
+        value: function getTest(testIdentifier) {
+            var _this = this;
+
+            $.ajax({ url: '/api/tests/' + testIdentifier }).done(function (data) {
+                _this.actions.getTestSuccess(data);
+                _this.actions.getAllQuestions();
+            }).fail(function (jqXhr) {
+                _this.actions.getTestFail(jqXhr.responseJSON ? jqXhr.responseJSON.message : 'Server unreachable.');
+            });
+        }
+    }, {
+        key: 'getAllQuestions',
+        value: function getAllQuestions() {
+            var _this2 = this;
+
+            $.ajax({ url: 'http://localhost:8080/MCQuestions/api/questions' }).done(function (data) {
+                _this2.actions.getAllQuestionsSuccess(data);
+            }).fail(function (jqXhr) {
+                _this2.actions.getAllQuestionsFail(jqXhr);
+            });
+        }
+    }, {
+        key: 'toggleQuestionSelected',
+        value: function toggleQuestionSelected(id) {
+            this.dispatch(id);
+        }
+    }, {
+        key: 'updateTest',
+        value: function updateTest(testIdentifier, questionIds) {
+            var _this3 = this;
+
+            $.ajax({
+                type: 'PUT',
+                contentType: 'application/json',
+                url: 'api/tests/' + testIdentifier,
+                data: JSON.stringify({
+                    questionIds: questionIds
+                })
+            }).done(function (data) {
+                _this3.actions.updateTestSuccess(data.message);
+            }).fail(function (jqXhr) {
+                _this3.actions.updateTestFail(jqXhr.responseJSON ? jqXhr.responseJSON.message : 'Server unreachable.');
+            });
+        }
+    }]);
+
+    return TestActions;
+})();
+
+exports.default = _alt2.default.createActions(TestActions);
+
+},{"../alt":4}],3:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -106,7 +185,7 @@ var TestListActions = (function () {
 
 exports.default = _alt2.default.createActions(TestListActions);
 
-},{"../alt":3}],3:[function(require,module,exports){
+},{"../alt":4}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -121,7 +200,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = new _alt2.default();
 
-},{"alt":"alt"}],4:[function(require,module,exports){
+},{"alt":"alt"}],5:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -185,7 +264,7 @@ var AddTest = (function (_React$Component) {
         }
     }, {
         key: 'handleSubmit',
-        value: function handleSubmit(event) {
+        value: function handleSubmit() {
             var testIdentifier = this.state.testIdentifier;
             // Filter out questions which are not selected, then return an array of their ids
             var questionIds = this.state.questions.filter(function (q) {
@@ -292,7 +371,7 @@ var AddTest = (function (_React$Component) {
 
 exports.default = AddTest;
 
-},{"../actions/AddTestActions":1,"../stores/AddTestStore":13,"./QuestionCatalogue":8,"react":"react"}],5:[function(require,module,exports){
+},{"../actions/AddTestActions":1,"../stores/AddTestStore":15,"./QuestionCatalogue":9,"react":"react"}],6:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -343,7 +422,7 @@ var App = (function (_React$Component) {
 
 exports.default = App;
 
-},{"./Navbar":7,"react":"react"}],6:[function(require,module,exports){
+},{"./Navbar":8,"react":"react"}],7:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -393,7 +472,7 @@ var Home = (function (_React$Component) {
 
 exports.default = Home;
 
-},{"./TestList":10,"react":"react"}],7:[function(require,module,exports){
+},{"./TestList":12,"react":"react"}],8:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -492,7 +571,7 @@ var Navbar = (function (_React$Component) {
 
 exports.default = Navbar;
 
-},{"react":"react","react-router":"react-router"}],8:[function(require,module,exports){
+},{"react":"react","react-router":"react-router"}],9:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -556,7 +635,7 @@ var QuestionCatalogue = (function (_React$Component) {
 
 exports.default = QuestionCatalogue;
 
-},{"./QuestionItem":9,"react":"react"}],9:[function(require,module,exports){
+},{"./QuestionItem":10,"react":"react"}],10:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -662,7 +741,169 @@ var QuestionItem = (function (_React$Component) {
 
 exports.default = QuestionItem;
 
-},{"react":"react"}],10:[function(require,module,exports){
+},{"react":"react"}],11:[function(require,module,exports){
+'use strict';
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _TestStore = require('../stores/TestStore');
+
+var _TestStore2 = _interopRequireDefault(_TestStore);
+
+var _TestActions = require('../actions/TestActions');
+
+var _TestActions2 = _interopRequireDefault(_TestActions);
+
+var _QuestionCatalogue = require('./QuestionCatalogue');
+
+var _QuestionCatalogue2 = _interopRequireDefault(_QuestionCatalogue);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Test = (function (_React$Component) {
+    _inherits(Test, _React$Component);
+
+    function Test(props) {
+        _classCallCheck(this, Test);
+
+        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Test).call(this, props));
+
+        _this.state = _TestStore2.default.getState();
+        _this.onChange = _this.onChange.bind(_this);
+        return _this;
+    }
+
+    _createClass(Test, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            _TestStore2.default.listen(this.onChange);
+            _TestActions2.default.getTest(this.props.params.id);
+        }
+    }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            _TestStore2.default.unlisten(this.onChange);
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate(prevProps) {
+            // When URL path changes, fetch new test data
+            if (prevProps.params.id !== this.props.params.id) {
+                _TestActions2.default.getTest(this.props.params.id);
+            }
+        }
+    }, {
+        key: 'onChange',
+        value: function onChange(state) {
+            this.setState(state);
+        }
+    }, {
+        key: 'handleSubmit',
+        value: function handleSubmit() {
+            var testIdentifier = this.state.testIdentifier;
+            // Filter out questions which are not selected and return an array of their ids
+            var questionIds = this.state.questions.filter(function (q) {
+                return q.selected;
+            }).map(function (q) {
+                return q.id;
+            });
+
+            if (questionIds.length === 0) {
+                _TestActions2.default.invalidNumberOfQuestions();
+            } else {
+                _TestActions2.default.updateTest(testIdentifier, questionIds);
+            }
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(
+                    'div',
+                    { className: 'container' },
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'panel panel-default' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'panel-heading' },
+                            _react2.default.createElement('i', { className: 'glyphicon glyphicon-wrench' }),
+                            ' View / Edit Test'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'panel-body' },
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'form-group' },
+                                _react2.default.createElement(
+                                    'label',
+                                    { htmlFor: 'identifier' },
+                                    'Test identifier:'
+                                ),
+                                _react2.default.createElement('input', { className: 'form-control', type: 'text', id: 'identifier', value: this.state.testIdentifier, disabled: true })
+                            ),
+                            _react2.default.createElement(
+                                'button',
+                                { className: 'btn btn-primary', onClick: this.handleSubmit.bind(this) },
+                                _react2.default.createElement('i', { className: 'glyphicon glyphicon-ok' }),
+                                ' Save'
+                            )
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'panel-heading' },
+                            _react2.default.createElement('i', { className: 'glyphicon glyphicon-th-list' }),
+                            ' Question Catalogue'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'panel-body' },
+                            _react2.default.createElement(
+                                'div',
+                                { className: "form-group " + this.state.questionsState },
+                                _react2.default.createElement(
+                                    'label',
+                                    { htmlFor: 'categories' },
+                                    'Filter by category'
+                                ),
+                                _react2.default.createElement('input', { className: 'form-control', type: 'text', id: 'categories', placeholder: 'Type the tag names separated by commas (e.g. math, geometry, physics)' }),
+                                _react2.default.createElement(
+                                    'span',
+                                    { className: 'help-block' },
+                                    this.state.questionsHelpBlock
+                                )
+                            ),
+                            _react2.default.createElement(_QuestionCatalogue2.default, { questions: this.state.questions, toggleQuestion: _TestActions2.default.toggleQuestionSelected })
+                        )
+                    )
+                )
+            );
+        }
+    }]);
+
+    return Test;
+})(_react2.default.Component);
+
+exports.default = Test;
+
+},{"../actions/TestActions":2,"../stores/TestStore":17,"./QuestionCatalogue":9,"react":"react"}],12:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -725,7 +966,6 @@ var TestList = (function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            console.log(this.state.tests);
             var tests = this.state.tests.map(function (t) {
                 var timeEstimation = t.questionIds.length * 1;
                 return _react2.default.createElement(
@@ -787,7 +1027,7 @@ var TestList = (function (_React$Component) {
 
 exports.default = TestList;
 
-},{"../actions/TestListActions":2,"../stores/TestListStore":14,"react":"react","react-router":"react-router"}],11:[function(require,module,exports){
+},{"../actions/TestListActions":3,"../stores/TestListStore":16,"react":"react","react-router":"react-router"}],13:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -820,7 +1060,7 @@ _reactDom2.default.render(_react2.default.createElement(
   _routes2.default
 ), document.getElementById('app'));
 
-},{"./routes":12,"history/lib/createBrowserHistory":23,"react":"react","react-dom":"react-dom","react-router":"react-router"}],12:[function(require,module,exports){
+},{"./routes":14,"history/lib/createBrowserHistory":26,"react":"react","react-dom":"react-dom","react-router":"react-router"}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -845,16 +1085,21 @@ var _AddTest = require('./components/AddTest');
 
 var _AddTest2 = _interopRequireDefault(_AddTest);
 
+var _Test = require('./components/Test');
+
+var _Test2 = _interopRequireDefault(_Test);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _react2.default.createElement(
   _reactRouter.Route,
   { component: _App2.default },
   _react2.default.createElement(_reactRouter.Route, { path: '/', component: _Home2.default }),
-  _react2.default.createElement(_reactRouter.Route, { path: '/addTest', component: _AddTest2.default })
+  _react2.default.createElement(_reactRouter.Route, { path: '/addTest', component: _AddTest2.default }),
+  _react2.default.createElement(_reactRouter.Route, { path: '/tests/:id', component: _Test2.default })
 );
 
-},{"./components/AddTest":4,"./components/App":5,"./components/Home":6,"react":"react","react-router":"react-router"}],13:[function(require,module,exports){
+},{"./components/AddTest":5,"./components/App":6,"./components/Home":7,"./components/Test":11,"react":"react","react-router":"react-router"}],15:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -881,6 +1126,10 @@ var AddTestStore = (function () {
 
         this.bindActions(_AddTestActions2.default);
         this.questions = [];
+        this.testIdentifierState = '';
+        this.testIdentifierHelpBlock = '';
+        this.questionsState = '';
+        this.questionsHelpBlock = '';
     }
 
     _createClass(AddTestStore, [{
@@ -949,7 +1198,7 @@ var AddTestStore = (function () {
 
 exports.default = _alt2.default.createStore(AddTestStore);
 
-},{"../actions/AddTestActions":1,"../alt":3}],14:[function(require,module,exports){
+},{"../actions/AddTestActions":1,"../alt":4}],16:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -995,7 +1244,101 @@ var TestListStore = (function () {
 
 exports.default = _alt2.default.createStore(TestListStore);
 
-},{"../actions/TestListActions":2,"../alt":3}],15:[function(require,module,exports){
+},{"../actions/TestListActions":3,"../alt":4}],17:[function(require,module,exports){
+'use strict';
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _alt = require('../alt');
+
+var _alt2 = _interopRequireDefault(_alt);
+
+var _TestActions = require('../actions/TestActions');
+
+var _TestActions2 = _interopRequireDefault(_TestActions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TestStore = (function () {
+    function TestStore() {
+        _classCallCheck(this, TestStore);
+
+        this.bindActions(_TestActions2.default);
+        this.testIdentifier = '';
+        this.questionIds = [];
+        this.questions = [];
+        this.questionsState = '';
+        this.questionsHelpBlock = '';
+    }
+
+    _createClass(TestStore, [{
+        key: 'onGetTestSuccess',
+        value: function onGetTestSuccess(data) {
+            this.testIdentifier = data.testIdentifier;
+            this.questionIds = data.questionIds;
+        }
+    }, {
+        key: 'onGetTestFail',
+        value: function onGetTestFail(message) {
+            toastr.error(message);
+        }
+    }, {
+        key: 'onGetAllQuestionsSuccess',
+        value: function onGetAllQuestionsSuccess(data) {
+            var _this = this;
+
+            this.questions = data.map(function (q) {
+                q.selected = _this.questionIds.indexOf(q.id) !== -1;
+                return q;
+            });
+        }
+    }, {
+        key: 'onGetAllQuestionsFail',
+        value: function onGetAllQuestionsFail(jqXhr) {
+            toastr.error(jqXhr.responseJSON && jqXhr.responseJSON.message || jqXhr.responseText || jqXhr.statusText);
+        }
+    }, {
+        key: 'onToggleQuestionSelected',
+        value: function onToggleQuestionSelected(id) {
+            var found = false;
+            var i = 0;
+            while (!found && i < this.questions.length) {
+                if (this.questions[i].id == id) {
+                    found = true;
+                    this.questions[i].selected = !this.questions[i].selected;
+                }
+                i++;
+            }
+
+            this.questionsState = '';
+            this.questionsHelpBlock = '';
+        }
+    }, {
+        key: 'onUpdateTestSuccess',
+        value: function onUpdateTestSuccess(message) {
+            this.questionsState = 'has-success';
+            this.questionsHelpBlock = '';
+            toastr.success(message);
+        }
+    }, {
+        key: 'onUpdateTestFail',
+        value: function onUpdateTestFail(message) {
+            toastr.error(message);
+        }
+    }]);
+
+    return TestStore;
+})();
+
+exports.default = _alt2.default.createStore(TestStore);
+
+},{"../actions/TestActions":2,"../alt":4}],18:[function(require,module,exports){
 var pSlice = Array.prototype.slice;
 var objectKeys = require('./lib/keys.js');
 var isArguments = require('./lib/is_arguments.js');
@@ -1091,7 +1434,7 @@ function objEquiv(a, b, opts) {
   return typeof a === typeof b;
 }
 
-},{"./lib/is_arguments.js":16,"./lib/keys.js":17}],16:[function(require,module,exports){
+},{"./lib/is_arguments.js":19,"./lib/keys.js":20}],19:[function(require,module,exports){
 var supportsArgumentsClass = (function(){
   return Object.prototype.toString.call(arguments)
 })() == '[object Arguments]';
@@ -1113,7 +1456,7 @@ function unsupported(object){
     false;
 };
 
-},{}],17:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 exports = module.exports = typeof Object.keys === 'function'
   ? Object.keys : shim;
 
@@ -1124,7 +1467,7 @@ function shim (obj) {
   return keys;
 }
 
-},{}],18:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /**
  * Indicates that navigation was caused by a call to history.push.
  */
@@ -1156,7 +1499,7 @@ exports['default'] = {
   REPLACE: REPLACE,
   POP: POP
 };
-},{}],19:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -1183,7 +1526,7 @@ function loopAsync(turns, work, callback) {
 
   next();
 }
-},{}],20:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 (function (process){
 /*eslint-disable no-empty */
 'use strict';
@@ -1254,7 +1597,7 @@ function readState(key) {
   return null;
 }
 }).call(this,require('_process'))
-},{"_process":32,"warning":33}],21:[function(require,module,exports){
+},{"_process":35,"warning":36}],24:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1330,13 +1673,13 @@ function supportsGoWithoutReloadUsingHash() {
   var ua = navigator.userAgent;
   return ua.indexOf('Firefox') === -1;
 }
-},{}],22:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
 var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
 exports.canUseDOM = canUseDOM;
-},{}],23:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -1511,7 +1854,7 @@ function createBrowserHistory() {
 exports['default'] = createBrowserHistory;
 module.exports = exports['default'];
 }).call(this,require('_process'))
-},{"./Actions":18,"./DOMStateStorage":20,"./DOMUtils":21,"./ExecutionEnvironment":22,"./createDOMHistory":24,"_process":32,"invariant":31}],24:[function(require,module,exports){
+},{"./Actions":21,"./DOMStateStorage":23,"./DOMUtils":24,"./ExecutionEnvironment":25,"./createDOMHistory":27,"_process":35,"invariant":34}],27:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -1554,7 +1897,7 @@ function createDOMHistory(options) {
 exports['default'] = createDOMHistory;
 module.exports = exports['default'];
 }).call(this,require('_process'))
-},{"./DOMUtils":21,"./ExecutionEnvironment":22,"./createHistory":25,"_process":32,"invariant":31}],25:[function(require,module,exports){
+},{"./DOMUtils":24,"./ExecutionEnvironment":25,"./createHistory":28,"_process":35,"invariant":34}],28:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1825,7 +2168,7 @@ function createHistory() {
 
 exports['default'] = createHistory;
 module.exports = exports['default'];
-},{"./Actions":18,"./AsyncUtils":19,"./createLocation":26,"./deprecate":27,"./runTransitionHook":30,"deep-equal":15}],26:[function(require,module,exports){
+},{"./Actions":21,"./AsyncUtils":22,"./createLocation":29,"./deprecate":30,"./runTransitionHook":33,"deep-equal":18}],29:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1862,7 +2205,7 @@ function createLocation() {
 
 exports['default'] = createLocation;
 module.exports = exports['default'];
-},{"./Actions":18,"./parsePath":29}],27:[function(require,module,exports){
+},{"./Actions":21,"./parsePath":32}],30:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -1884,7 +2227,7 @@ function deprecate(fn, message) {
 exports['default'] = deprecate;
 module.exports = exports['default'];
 }).call(this,require('_process'))
-},{"_process":32,"warning":33}],28:[function(require,module,exports){
+},{"_process":35,"warning":36}],31:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -1898,7 +2241,7 @@ function extractPath(string) {
 
 exports["default"] = extractPath;
 module.exports = exports["default"];
-},{}],29:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -1945,7 +2288,7 @@ function parsePath(path) {
 exports['default'] = parsePath;
 module.exports = exports['default'];
 }).call(this,require('_process'))
-},{"./extractPath":28,"_process":32,"warning":33}],30:[function(require,module,exports){
+},{"./extractPath":31,"_process":35,"warning":36}],33:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -1972,7 +2315,7 @@ function runTransitionHook(hook, location, callback) {
 exports['default'] = runTransitionHook;
 module.exports = exports['default'];
 }).call(this,require('_process'))
-},{"_process":32,"warning":33}],31:[function(require,module,exports){
+},{"_process":35,"warning":36}],34:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -2027,7 +2370,7 @@ var invariant = function(condition, format, a, b, c, d, e, f) {
 module.exports = invariant;
 
 }).call(this,require('_process'))
-},{"_process":32}],32:[function(require,module,exports){
+},{"_process":35}],35:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2120,7 +2463,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],33:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -2184,4 +2527,4 @@ if (process.env.NODE_ENV !== 'production') {
 module.exports = warning;
 
 }).call(this,require('_process'))
-},{"_process":32}]},{},[11]);
+},{"_process":35}]},{},[13]);

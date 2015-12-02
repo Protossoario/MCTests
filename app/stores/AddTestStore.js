@@ -5,6 +5,10 @@ class AddTestStore {
     constructor() {
         this.bindActions(AddTestActions);
         this.questions = [];
+        this.testIdentifierState = '';
+        this.testIdentifierHelpBlock = '';
+        this.questionsState = '';
+        this.questionsHelpBlock = '';
     }
 
     onGetAllQuestionsSuccess(data) {
