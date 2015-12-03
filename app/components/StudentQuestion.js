@@ -20,16 +20,14 @@ class StudentQuestion extends React.Component {
             return (
                 <tr key={ a.id } className={ rowClass } onClick={ this.props.selectAnswer.bind(null, this.props.index, index) } >
                     <td className="col-sm-12">
-                        <i className={ "glyphicon glyphicon-" + (a.selected ? "check" : "unchecked") }></i> { a.text }
+                        <i className={ "glyphicon glyphicon-" + (a.selected ? "check" : "unchecked") }></i> <span dangerouslySetInnerHTML={{ __html: a.text }}></span>
                     </td>
                 </tr>
             );
         });
         return (
             <div className="panel panel-primary">
-                <div className="panel-heading">
-                    { this.props.question.text }
-                </div>
+                <div className="panel-heading" dangerouslySetInnerHTML={{ __html: this.props.question.text }}></div>
                 <div className="panel-body">
                     { correctAnswers > 1 ? "Check all that apply (no more than " + correctAnswers + ")." : "Choose one." }
                 </div>

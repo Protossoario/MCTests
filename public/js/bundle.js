@@ -751,18 +751,14 @@ var PreviewQuestion = (function (_React$Component) {
                         "label",
                         null,
                         _react2.default.createElement("input", { type: correctAnswers > 1 ? "checkbox" : "radio", value: index }),
-                        a.text
+                        _react2.default.createElement("div", { dangerouslySetInnerHTML: { __html: a.text } })
                     )
                 );
             });
             return _react2.default.createElement(
                 "div",
                 { className: "panel panel-primary" },
-                _react2.default.createElement(
-                    "div",
-                    { className: "panel-heading" },
-                    this.props.question.text
-                ),
+                _react2.default.createElement("div", { className: "panel-heading", dangerouslySetInnerHTML: { __html: this.props.question.text } }),
                 _react2.default.createElement(
                     "div",
                     { className: "panel-body" },
@@ -1026,11 +1022,7 @@ var QuestionItem = (function (_React$Component) {
                             index + 1
                         )
                     ),
-                    _react2.default.createElement(
-                        "td",
-                        { className: "col-sm-8" },
-                        a.text
-                    ),
+                    _react2.default.createElement("td", { className: "col-sm-8", dangerouslySetInnerHTML: { __html: a.text } }),
                     _react2.default.createElement(
                         "td",
                         { className: "col-sm-2" },
@@ -1056,7 +1048,7 @@ var QuestionItem = (function (_React$Component) {
                             "h4",
                             null,
                             selectionIcon,
-                            this.props.text
+                            _react2.default.createElement("div", { dangerouslySetInnerHTML: { __html: this.props.text } })
                         )
                     ),
                     _react2.default.createElement(
@@ -1143,18 +1135,14 @@ var StudentQuestion = (function (_React$Component) {
                         { className: "col-sm-12" },
                         _react2.default.createElement("i", { className: "glyphicon glyphicon-" + (a.selected ? "check" : "unchecked") }),
                         " ",
-                        a.text
+                        _react2.default.createElement("span", { dangerouslySetInnerHTML: { __html: a.text } })
                     )
                 );
             });
             return _react2.default.createElement(
                 "div",
                 { className: "panel panel-primary" },
-                _react2.default.createElement(
-                    "div",
-                    { className: "panel-heading" },
-                    this.props.question.text
-                ),
+                _react2.default.createElement("div", { className: "panel-heading", dangerouslySetInnerHTML: { __html: this.props.question.text } }),
                 _react2.default.createElement(
                     "div",
                     { className: "panel-body" },

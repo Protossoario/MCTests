@@ -11,16 +11,14 @@ class PreviewQuestion extends React.Component {
                 <div key={ a.id } className={ correctAnswers > 1 ? "checkbox" : "radio" }>
                     <label>
                         <input type={ correctAnswers > 1 ? "checkbox" : "radio" } value={ index } />
-                        { a.text }
+                        <div dangerouslySetInnerHTML={{ __html: a.text }}></div>
                     </label>
                 </div>
             );
         });
         return (
             <div className="panel panel-primary">
-                <div className="panel-heading">
-                    { this.props.question.text }
-                </div>
+                <div className="panel-heading" dangerouslySetInnerHTML={{ __html: this.props.question.text }}></div>
                 <div className="panel-body">
                     { correctAnswers > 1 ? "Check all that apply (no more than " + correctAnswers + ")." : "Choose one." }
                     { renderAnswers }
