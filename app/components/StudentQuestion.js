@@ -1,21 +1,28 @@
 import React from 'react';
 
 class StudentQuestion extends React.Component {
-    onChange() {
-    }
-
     render() {
         let answers = this.props.question.answers;
         let correctAnswers = answers.reduce((count, answer) => {
             return count + (answer.correct ? 1 : 0);
         }, 0);
         let renderAnswers = answers.map((a, index) => {
+            let rowClass = "row-answer";
+            if (this.props.submitted) {
+                if (a.selected && a.correct) {
+                    rowClass = rowClass + " success";
+                } else if (a.correct) {
+                    rowClass = rowClass + " danger";
+                }
+            } else if (a.selected) {
+                rowClass = rowClass + " active";
+            }
             return (
-                <div key={ a.id } className="row row-answer" onClick={ this.props.selectAnswer.bind(null, this.props.index, index) } >
-                    <div className="col-sm-12">
+                <tr key={ a.id } className={ rowClass } onClick={ this.props.selectAnswer.bind(null, this.props.index, index) } >
+                    <td className="col-sm-12">
                         <i className={ "glyphicon glyphicon-" + (a.selected ? "check" : "unchecked") }></i> { a.text }
-                    </div>
-                </div>
+                    </td>
+                </tr>
             );
         });
         return (
@@ -25,8 +32,12 @@ class StudentQuestion extends React.Component {
                 </div>
                 <div className="panel-body">
                     { correctAnswers > 1 ? "Check all that apply (no more than " + correctAnswers + ")." : "Choose one." }
-                    { renderAnswers }
                 </div>
+                <table className="table">
+                    <tbody>
+                        { renderAnswers }
+                    </tbody>
+                </table>
             </div>
         );
     }

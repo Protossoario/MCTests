@@ -147,7 +147,7 @@ var StudentTestActions = (function () {
     function StudentTestActions() {
         _classCallCheck(this, StudentTestActions);
 
-        this.generateActions('getTestSuccess', 'getTestFail', 'getQuestionsSuccess', 'getQuestionsFail');
+        this.generateActions('getTestSuccess', 'getTestFail', 'getQuestionsSuccess', 'getQuestionsFail', 'submitTest');
     }
 
     _createClass(StudentTestActions, [{
@@ -1116,9 +1116,6 @@ var StudentQuestion = (function (_React$Component) {
     }
 
     _createClass(StudentQuestion, [{
-        key: "onChange",
-        value: function onChange() {}
-    }, {
         key: "render",
         value: function render() {
             var _this2 = this;
@@ -1128,11 +1125,21 @@ var StudentQuestion = (function (_React$Component) {
                 return count + (answer.correct ? 1 : 0);
             }, 0);
             var renderAnswers = answers.map(function (a, index) {
+                var rowClass = "row-answer";
+                if (_this2.props.submitted) {
+                    if (a.selected && a.correct) {
+                        rowClass = rowClass + " success";
+                    } else if (a.correct) {
+                        rowClass = rowClass + " danger";
+                    }
+                } else if (a.selected) {
+                    rowClass = rowClass + " active";
+                }
                 return _react2.default.createElement(
-                    "div",
-                    { key: a.id, className: "row row-answer", onClick: _this2.props.selectAnswer.bind(null, _this2.props.index, index) },
+                    "tr",
+                    { key: a.id, className: rowClass, onClick: _this2.props.selectAnswer.bind(null, _this2.props.index, index) },
                     _react2.default.createElement(
-                        "div",
+                        "td",
                         { className: "col-sm-12" },
                         _react2.default.createElement("i", { className: "glyphicon glyphicon-" + (a.selected ? "check" : "unchecked") }),
                         " ",
@@ -1151,8 +1158,16 @@ var StudentQuestion = (function (_React$Component) {
                 _react2.default.createElement(
                     "div",
                     { className: "panel-body" },
-                    correctAnswers > 1 ? "Check all that apply (no more than " + correctAnswers + ")." : "Choose one.",
-                    renderAnswers
+                    correctAnswers > 1 ? "Check all that apply (no more than " + correctAnswers + ")." : "Choose one."
+                ),
+                _react2.default.createElement(
+                    "table",
+                    { className: "table" },
+                    _react2.default.createElement(
+                        "tbody",
+                        null,
+                        renderAnswers
+                    )
                 )
             );
         }
@@ -1236,18 +1251,69 @@ var StudentTest = (function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
+            var _this2 = this;
+
+            var renderTestResult = '';
+            if (this.state.submitted) {
+                var result = 0;
+                // compute the score weight for each question
+                this.state.questions.forEach(function (q) {
+                    var weight = 0;
+                    var correctAnswers = q.answers.reduce(function (count, a) {
+                        return count + (a.correct ? 1 : 0);
+                    }, 0);
+                    if (correctAnswers > 1) {
+                        // question has multiple right answers, so weight score = ratio of correct answers
+                        q.answers.forEach(function (a) {
+                            return weight += a.selected == a.correct ? 1 : 0;
+                        });
+                        result += weight / q.answers.length;
+                    } else {
+                        // question has one answer, so only if the answer is correct they get 1 point, else 0 points
+                        q.answers.forEach(function (a) {
+                            return weight += a.selected && a.correct ? 1 : 0;
+                        });
+                        result += weight;
+                    }
+                });
+                // average the question weights to get the final score
+                result /= this.state.questions.length;
+
+                renderTestResult = _react2.default.createElement(
+                    'div',
+                    { className: 'panel panel-default animated fadeIn' },
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'panel-heading' },
+                        'Final Score: ',
+                        result * 100,
+                        '%'
+                    )
+                );
+            }
+
             var questions = this.state.questions.map(function (q, index) {
-                return _react2.default.createElement(_StudentQuestion2.default, { key: q.id, question: q, index: index, selectAnswer: _StudentTestActions2.default.updateQuestionAnswer });
+                return _react2.default.createElement(_StudentQuestion2.default, { key: q.id, question: q, index: index, selectAnswer: _StudentTestActions2.default.updateQuestionAnswer, submitted: _this2.state.submitted });
             });
             return _react2.default.createElement(
                 'div',
                 { className: 'container' },
                 questions,
                 _react2.default.createElement(
-                    'button',
-                    { className: 'btn btn-primary' },
-                    'Submit'
-                )
+                    'div',
+                    { className: "form-group " + this.state.submitHelpBlockState },
+                    _react2.default.createElement(
+                        'button',
+                        { className: 'btn btn-primary', onClick: _StudentTestActions2.default.submitTest, disabled: this.state.submitted },
+                        'Submit'
+                    ),
+                    _react2.default.createElement(
+                        'p',
+                        { className: 'help-block' },
+                        this.state.submitHelpBlock
+                    )
+                ),
+                renderTestResult
             );
         }
     }]);
@@ -1826,9 +1892,19 @@ var StudentTestStore = (function () {
 
         this.bindActions(_StudentTestActions2.default);
         this.questions = [];
+        this.submitted = false;
+        this.submitHelpBlock = '';
+        this.submitHelpBlockState = '';
     }
 
     _createClass(StudentTestStore, [{
+        key: 'onGetTestSuccess',
+        value: function onGetTestSuccess() {
+            this.submitted = false;
+            this.submitHelpBlock = '';
+            this.submitHelpBlockState = '';
+        }
+    }, {
         key: 'onGetTestFail',
         value: function onGetTestFail(message) {
             toastr.error(message);
@@ -1853,6 +1929,14 @@ var StudentTestStore = (function () {
     }, {
         key: 'onUpdateQuestionAnswer',
         value: function onUpdateQuestionAnswer(indexes) {
+            // cannot change answers once they have been submitted
+            if (this.submitted) {
+                return;
+            }
+
+            this.submitHelpBlock = '';
+            this.submitHelpBlockState = '';
+
             var questionIndex = indexes.questionIndex;
             var answerIndex = indexes.answerIndex;
             var question = this.questions[questionIndex];
@@ -1868,6 +1952,21 @@ var StudentTestStore = (function () {
                     a.selected = index == answerIndex;
                     return a;
                 });
+            }
+        }
+    }, {
+        key: 'onSubmitTest',
+        value: function onSubmitTest() {
+            var allQuestionsHaveAnswers = this.questions.reduce(function (answered, q) {
+                return answered && q.answers.reduce(function (answered, a) {
+                    return answered || a.selected;
+                }, false);
+            }, true);
+            if (allQuestionsHaveAnswers) {
+                this.submitted = true;
+            } else {
+                this.submitHelpBlockState = 'has-error';
+                this.submitHelpBlock = 'You must select an answer for every question before submitting.';
             }
         }
     }]);

@@ -6,7 +6,8 @@ class StudentTestActions {
             'getTestSuccess',
             'getTestFail',
             'getQuestionsSuccess',
-            'getQuestionsFail'
+            'getQuestionsFail',
+            'submitTest'
         );
     }
 

@@ -5,6 +5,15 @@ class StudentTestStore {
     constructor() {
         this.bindActions(StudentTestActions)
         this.questions = [];
+        this.submitted = false;
+        this.submitHelpBlock = '';
+        this.submitHelpBlockState = '';
+    }
+
+    onGetTestSuccess() {
+        this.submitted = false;
+        this.submitHelpBlock = '';
+        this.submitHelpBlockState = '';
     }
 
     onGetTestFail(message) {
@@ -27,6 +36,14 @@ class StudentTestStore {
     }
 
     onUpdateQuestionAnswer(indexes) {
+        // cannot change answers once they have been submitted
+        if (this.submitted) {
+            return;
+        }
+
+        this.submitHelpBlock = '';
+        this.submitHelpBlockState = '';
+
         let questionIndex = indexes.questionIndex;
         let answerIndex = indexes.answerIndex;
         let question = this.questions[questionIndex];
@@ -42,6 +59,18 @@ class StudentTestStore {
                 a.selected = (index == answerIndex);
                 return a;
             });
+        }
+    }
+
+    onSubmitTest() {
+        let allQuestionsHaveAnswers = this.questions.reduce((answered, q) => {
+            return answered && q.answers.reduce((answered, a) => answered || a.selected, false);
+        }, true);
+        if (allQuestionsHaveAnswers) {
+            this.submitted = true;
+        } else {
+            this.submitHelpBlockState = 'has-error';
+            this.submitHelpBlock = 'You must select an answer for every question before submitting.';
         }
     }
 }
