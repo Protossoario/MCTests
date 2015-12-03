@@ -8,12 +8,14 @@ class StudentTestStore {
         this.submitted = false;
         this.submitHelpBlock = '';
         this.submitHelpBlockState = '';
+        this.finalScore = 0;
     }
 
     onGetTestSuccess() {
         this.submitted = false;
         this.submitHelpBlock = '';
         this.submitHelpBlockState = '';
+        this.finalScore = 0;
     }
 
     onGetTestFail(message) {
@@ -68,6 +70,26 @@ class StudentTestStore {
         }, true);
         if (allQuestionsHaveAnswers) {
             this.submitted = true;
+
+            let result = 0;
+            // compute the score weight for each question
+            this.questions.forEach((q) => {
+                let weight = 0;
+                let correctAnswers = q.answers.reduce((count, a) => count + (a.correct ? 1 : 0), 0);
+                if (correctAnswers > 1) {
+                    // question has multiple right answers, so weight score = ratio of correct answers
+                    q.answers.forEach((a) => weight += (a.selected == a.correct ? 1 : 0));
+                    result += weight / q.answers.length;
+                } else {
+                    // question has one answer, so only if the answer is correct they get 1 point, else 0 points
+                    q.answers.forEach((a) => weight += (a.selected && a.correct ? 1 : 0));
+                    result += weight;
+                }
+            });
+            // average the question weights to get the final score
+            result /= this.questions.length;
+            this.finalScore = result;
+            toastr.info("Your final score is " + (result * 100).toFixed(1) + "%");
         } else {
             this.submitHelpBlockState = 'has-error';
             this.submitHelpBlock = 'You must select an answer for every question before submitting.';

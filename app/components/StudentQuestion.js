@@ -12,6 +12,8 @@ class StudentQuestion extends React.Component {
                 if (a.selected && a.correct) {
                     rowClass = rowClass + " success";
                 } else if (a.correct) {
+                    rowClass = rowClass + " warning";
+                } else if (a.selected) {
                     rowClass = rowClass + " danger";
                 }
             } else if (a.selected) {

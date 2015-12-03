@@ -1122,6 +1122,8 @@ var StudentQuestion = (function (_React$Component) {
                     if (a.selected && a.correct) {
                         rowClass = rowClass + " success";
                     } else if (a.correct) {
+                        rowClass = rowClass + " warning";
+                    } else if (a.selected) {
                         rowClass = rowClass + " danger";
                     }
                 } else if (a.selected) {
@@ -1243,38 +1245,14 @@ var StudentTest = (function (_React$Component) {
 
             var renderTestResult = '';
             if (this.state.submitted) {
-                var result = 0;
-                // compute the score weight for each question
-                this.state.questions.forEach(function (q) {
-                    var weight = 0;
-                    var correctAnswers = q.answers.reduce(function (count, a) {
-                        return count + (a.correct ? 1 : 0);
-                    }, 0);
-                    if (correctAnswers > 1) {
-                        // question has multiple right answers, so weight score = ratio of correct answers
-                        q.answers.forEach(function (a) {
-                            return weight += a.selected == a.correct ? 1 : 0;
-                        });
-                        result += weight / q.answers.length;
-                    } else {
-                        // question has one answer, so only if the answer is correct they get 1 point, else 0 points
-                        q.answers.forEach(function (a) {
-                            return weight += a.selected && a.correct ? 1 : 0;
-                        });
-                        result += weight;
-                    }
-                });
-                // average the question weights to get the final score
-                result /= this.state.questions.length;
-
                 renderTestResult = _react2.default.createElement(
                     'div',
-                    { className: 'panel panel-default animated fadeIn' },
+                    { className: 'panel panel-info animated fadeIn' },
                     _react2.default.createElement(
                         'div',
                         { className: 'panel-heading' },
                         'Final Score: ',
-                        result * 100,
+                        this.state.finalScore * 100,
                         '%'
                     )
                 );
@@ -1286,6 +1264,7 @@ var StudentTest = (function (_React$Component) {
             return _react2.default.createElement(
                 'div',
                 { className: 'container' },
+                renderTestResult,
                 questions,
                 _react2.default.createElement(
                     'div',
@@ -1883,6 +1862,7 @@ var StudentTestStore = (function () {
         this.submitted = false;
         this.submitHelpBlock = '';
         this.submitHelpBlockState = '';
+        this.finalScore = 0;
     }
 
     _createClass(StudentTestStore, [{
@@ -1891,6 +1871,7 @@ var StudentTestStore = (function () {
             this.submitted = false;
             this.submitHelpBlock = '';
             this.submitHelpBlockState = '';
+            this.finalScore = 0;
         }
     }, {
         key: 'onGetTestFail',
@@ -1952,6 +1933,32 @@ var StudentTestStore = (function () {
             }, true);
             if (allQuestionsHaveAnswers) {
                 this.submitted = true;
+
+                var result = 0;
+                // compute the score weight for each question
+                this.questions.forEach(function (q) {
+                    var weight = 0;
+                    var correctAnswers = q.answers.reduce(function (count, a) {
+                        return count + (a.correct ? 1 : 0);
+                    }, 0);
+                    if (correctAnswers > 1) {
+                        // question has multiple right answers, so weight score = ratio of correct answers
+                        q.answers.forEach(function (a) {
+                            return weight += a.selected == a.correct ? 1 : 0;
+                        });
+                        result += weight / q.answers.length;
+                    } else {
+                        // question has one answer, so only if the answer is correct they get 1 point, else 0 points
+                        q.answers.forEach(function (a) {
+                            return weight += a.selected && a.correct ? 1 : 0;
+                        });
+                        result += weight;
+                    }
+                });
+                // average the question weights to get the final score
+                result /= this.questions.length;
+                this.finalScore = result;
+                toastr.info("Your final score is " + (result * 100).toFixed(1) + "%");
             } else {
                 this.submitHelpBlockState = 'has-error';
                 this.submitHelpBlock = 'You must select an answer for every question before submitting.';
