@@ -25,13 +25,17 @@ class TestList extends React.Component {
 
     render() {
         let tests = this.state.tests.map((t) => {
-            let timeEstimation = t.questionIds.length * 1;
             return (
-                <Link to={ '/tests/' + t.testIdentifier } key={ t.testIdentifier } className="list-group-item animated fadeIn">
+                <div key={ t.testIdentifier } className="list-group-item animated fadeIn">
                     <h4 className="list-group-item-heading"><strong>{ t.testIdentifier }</strong></h4>
-                    <p className="list-group-item-text">Estimated length: <strong>{ timeEstimation + (timeEstimation == 1 ? ' minute' : ' minutes') }</strong></p>
-                    <p className="list-group-item-text">Questions: <span className="badge pull-right">{ t.questionIds.length }</span></p>
-                </Link>
+                    <p className="list-group-item-text">Length: <strong>{ t.questionIds.length + (t.questionIds.length == 1 ? ' question' : ' questions') }</strong></p>
+                    <br />
+                    <div className="btn-group btn-group-justified" role="group" aria-label="...">
+                        <Link to={ '/tests/' + t.testIdentifier } className="btn btn-warning" role="button"><i className="glyphicon glyphicon-edit"></i> Edit</Link>
+                        <Link to={ '/students/' + t.testIdentifier } className="btn btn-info" role="button"><i className="glyphicon glyphicon-exclamation-sign"></i> Attempt</Link>
+                        <Link to={ '/preview/' + t.testIdentifier } className="btn btn-primary" role="button"><i className="glyphicon glyphicon-eye-open"></i> Preview</Link>
+                    </div>
+                </div>
             );
         });
         return (

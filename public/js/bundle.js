@@ -1489,10 +1489,9 @@ var TestList = (function (_React$Component) {
         key: 'render',
         value: function render() {
             var tests = this.state.tests.map(function (t) {
-                var timeEstimation = t.questionIds.length * 1;
                 return _react2.default.createElement(
-                    _reactRouter.Link,
-                    { to: '/tests/' + t.testIdentifier, key: t.testIdentifier, className: 'list-group-item animated fadeIn' },
+                    'div',
+                    { key: t.testIdentifier, className: 'list-group-item animated fadeIn' },
                     _react2.default.createElement(
                         'h4',
                         { className: 'list-group-item-heading' },
@@ -1505,21 +1504,34 @@ var TestList = (function (_React$Component) {
                     _react2.default.createElement(
                         'p',
                         { className: 'list-group-item-text' },
-                        'Estimated length: ',
+                        'Length: ',
                         _react2.default.createElement(
                             'strong',
                             null,
-                            timeEstimation + (timeEstimation == 1 ? ' minute' : ' minutes')
+                            t.questionIds.length + (t.questionIds.length == 1 ? ' question' : ' questions')
                         )
                     ),
+                    _react2.default.createElement('br', null),
                     _react2.default.createElement(
-                        'p',
-                        { className: 'list-group-item-text' },
-                        'Questions: ',
+                        'div',
+                        { className: 'btn-group btn-group-justified', role: 'group', 'aria-label': '...' },
                         _react2.default.createElement(
-                            'span',
-                            { className: 'badge pull-right' },
-                            t.questionIds.length
+                            _reactRouter.Link,
+                            { to: '/tests/' + t.testIdentifier, className: 'btn btn-warning', role: 'button' },
+                            _react2.default.createElement('i', { className: 'glyphicon glyphicon-edit' }),
+                            ' Edit'
+                        ),
+                        _react2.default.createElement(
+                            _reactRouter.Link,
+                            { to: '/students/' + t.testIdentifier, className: 'btn btn-info', role: 'button' },
+                            _react2.default.createElement('i', { className: 'glyphicon glyphicon-exclamation-sign' }),
+                            ' Attempt'
+                        ),
+                        _react2.default.createElement(
+                            _reactRouter.Link,
+                            { to: '/preview/' + t.testIdentifier, className: 'btn btn-primary', role: 'button' },
+                            _react2.default.createElement('i', { className: 'glyphicon glyphicon-eye-open' }),
+                            ' Preview'
                         )
                     )
                 );
