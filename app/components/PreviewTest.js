@@ -33,7 +33,7 @@ class PreviewTest extends React.Component {
     render() {
         let questions = this.state.questions.map((q) => {
             return (
-                <PreviewQuestion question={ q } />
+                <PreviewQuestion key={ q.id } question={ q } />
             );
         });
         return (

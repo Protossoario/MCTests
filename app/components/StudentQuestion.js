@@ -1,6 +1,9 @@
 import React from 'react';
 
-class PreviewQuestion extends React.Component {
+class StudentQuestion extends React.Component {
+    onChange() {
+    }
+
     render() {
         let answers = this.props.question.answers;
         let correctAnswers = answers.reduce((count, answer) => {
@@ -8,11 +11,10 @@ class PreviewQuestion extends React.Component {
         }, 0);
         let renderAnswers = answers.map((a, index) => {
             return (
-                <div key={ a.id } className={ correctAnswers > 1 ? "checkbox" : "radio" }>
-                    <label>
-                        <input type={ correctAnswers > 1 ? "checkbox" : "radio" } value={ index } />
-                        { a.text }
-                    </label>
+                <div key={ a.id } className="row row-answer" onClick={ this.props.selectAnswer.bind(null, this.props.index, index) } >
+                    <div className="col-sm-12">
+                        <i className={ "glyphicon glyphicon-" + (a.selected ? "check" : "unchecked") }></i> { a.text }
+                    </div>
                 </div>
             );
         });
@@ -30,4 +32,4 @@ class PreviewQuestion extends React.Component {
     }
 }
 
-export default PreviewQuestion;
+export default StudentQuestion;

@@ -5,6 +5,7 @@ import Home from './components/Home';
 import AddTest from './components/AddTest';
 import Test from './components/Test';
 import PreviewTest from './components/PreviewTest';
+import StudentTest from './components/StudentTest';
 
 export default (
   <Route component={App}>
@@ -12,5 +13,6 @@ export default (
     <Route path='/addTest' component={AddTest} />
     <Route path='/tests/:id' component={Test} />
     <Route path='/preview/:id' component={PreviewTest} />
+    <Route path='/students/:id' component={StudentTest} />
   </Route>
 );
