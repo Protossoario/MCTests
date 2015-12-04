@@ -55,7 +55,7 @@ class Test extends React.Component {
                             </div>
                             <button className="btn btn-primary" onClick={ this.handleSubmit.bind(this) } ><i className="glyphicon glyphicon-ok"></i> Save</button>
                         </div>
-                        <div className="panel-heading"><i className="glyphicon glyphicon-th-list"></i> Question Catalogue<a className="pull-right btn btn-xs btn-info" href="http://localhost:8080/MCQuestions/addQuestion" target="_blank" role="button">Add More Questions <i className="glyphicon glyphicon-chevron-right"></i></a></div>
+                        <div className="panel-heading"><i className="glyphicon glyphicon-th-list"></i> Question Catalogue<a className="pull-right btn btn-xs btn-info" href="http://localhost:8080/MCQuestions_easanc/addQuestion" target="_blank" role="button">Add More Questions <i className="glyphicon glyphicon-chevron-right"></i></a></div>
                         <div className="panel-body">
                             <div className={ "form-group " + this.state.questionsState }>
                                 <label htmlFor="categories">Filter by category</label>

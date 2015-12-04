@@ -15,7 +15,7 @@ class AddTestActions {
     }
 
     getAllQuestions() {
-        $.ajax({ url: 'http://localhost:8080/MCQuestions/api/questions' })
+        $.ajax({ url: 'http://localhost:8080/MCQuestions_easanc/api/questions' })
             .done((data) => {
                 this.actions.getAllQuestionsSuccess(data)
             })

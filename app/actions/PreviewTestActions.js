@@ -24,7 +24,7 @@ class PreviewTestActions {
     getQuestions(questionIds) {
         // query MCQuestions for question data
         $.ajax({
-            url: 'http://localhost:8080/MCQuestions/api/questions/find',
+            url: 'http://localhost:8080/MCQuestions_easanc/api/questions/find',
             type: 'POST',
             data: {
                 ids: questionIds

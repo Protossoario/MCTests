@@ -27,7 +27,7 @@ var AddTestActions = (function () {
         value: function getAllQuestions() {
             var _this = this;
 
-            $.ajax({ url: 'http://localhost:8080/MCQuestions/api/questions' }).done(function (data) {
+            $.ajax({ url: 'http://localhost:8080/MCQuestions_easanc/api/questions' }).done(function (data) {
                 _this.actions.getAllQuestionsSuccess(data);
             }).fail(function (jqXhr) {
                 _this.actions.getAllQuestionsFail(jqXhr);
@@ -107,7 +107,7 @@ var PreviewTestActions = (function () {
 
             // query MCQuestions for question data
             $.ajax({
-                url: 'http://localhost:8080/MCQuestions/api/questions/find',
+                url: 'http://localhost:8080/MCQuestions_easanc/api/questions/find',
                 type: 'POST',
                 data: {
                     ids: questionIds
@@ -169,7 +169,7 @@ var StudentTestActions = (function () {
 
             // query MCQuestions for question data
             $.ajax({
-                url: 'http://localhost:8080/MCQuestions/api/questions/find',
+                url: 'http://localhost:8080/MCQuestions_easanc/api/questions/find',
                 type: 'POST',
                 data: {
                     ids: questionIds
@@ -236,7 +236,7 @@ var TestActions = (function () {
         value: function getAllQuestions() {
             var _this2 = this;
 
-            $.ajax({ url: 'http://localhost:8080/MCQuestions/api/questions' }).done(function (data) {
+            $.ajax({ url: 'http://localhost:8080/MCQuestions_easanc/api/questions' }).done(function (data) {
                 _this2.actions.getAllQuestionsSuccess(data);
             }).fail(function (jqXhr) {
                 _this2.actions.getAllQuestionsFail(jqXhr);
@@ -470,7 +470,7 @@ var AddTest = (function (_React$Component) {
                             ' Question Catalogue',
                             _react2.default.createElement(
                                 'a',
-                                { className: 'pull-right btn btn-xs btn-info', href: 'http://localhost:8080/MCQuestions/addQuestion', target: '_blank', role: 'button' },
+                                { className: 'pull-right btn btn-xs btn-info', href: 'http://localhost:8080/MCQuestions_easanc/addQuestion', target: '_blank', role: 'button' },
                                 'Add More Questions ',
                                 _react2.default.createElement('i', { className: 'glyphicon glyphicon-chevron-right' })
                             )
@@ -1422,7 +1422,7 @@ var Test = (function (_React$Component) {
                             ' Question Catalogue',
                             _react2.default.createElement(
                                 'a',
-                                { className: 'pull-right btn btn-xs btn-info', href: 'http://localhost:8080/MCQuestions/addQuestion', target: '_blank', role: 'button' },
+                                { className: 'pull-right btn btn-xs btn-info', href: 'http://localhost:8080/MCQuestions_easanc/addQuestion', target: '_blank', role: 'button' },
                                 'Add More Questions ',
                                 _react2.default.createElement('i', { className: 'glyphicon glyphicon-chevron-right' })
                             )
